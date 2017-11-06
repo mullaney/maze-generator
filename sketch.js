@@ -12,7 +12,7 @@ function setup() {
 	createCanvas(601, 601);
 	cols = floor(width / w);
 	rows = floor(height / w);
-	frameRate(30);
+	frameRate(10);
 
 	for(var c = 0; c < cols; c++) {
 		for(var r = 0; r< rows; r++) {
@@ -32,7 +32,21 @@ function draw() {
 	var next = current.checkNeighbors();
 	if (next) {
 		next.visited = true;
+		if (next.row < current.row) {
+			next.walls[2] = false;
+			current.walls[0] = false;
+		} else if (next.col > current.col) {
+			next.walls[3] = false;
+			current.walls[1] = false;
+		} else if (next.row > current.row) {
+			next.walls[0] = false;
+			current.walls[2] = false;
+		} else if (next.col < current.col) {
+			next.walls[1] = false;
+			current.walls[3] = false;
+		}
 		current = next;
+		current.highlight();
 	}
 }
 
@@ -64,7 +78,7 @@ function Cell(col, row) {
 	this.show = () => {
 		var x = this.col * w;
 		var y = this.row * w;
-		stroke(255,0,255);
+		stroke(0,255,255);
 
 		if (this.walls[0]) { line(x,y,x+w,y); }
 		if (this.walls[1]) { line(x+w,y,x+w,y+w); }
@@ -72,12 +86,20 @@ function Cell(col, row) {
 		if (this.walls[3]) { line(x,y+w,x,y); }
 
 		if (this.visited) {
-			fill(255,0,255,110);
+			fill(0,255,255,110);
+			noStroke();
 			rect(x,y,w,w);
 		}
 
-
 		// noFill();
 		// rect(x, y, w, w);
-	};
+		this.highlight = () => {
+			var x = this.col * w;
+			var y = this.row * w;
+			noStroke();
+			fill(255,191,0);
+			rect(x,y,w,w);
+		}
+	}
+
 }
