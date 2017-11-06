@@ -2,6 +2,7 @@ let cols, rows;
 const w = 20;
 let grid = [];
 let current;
+let stack = [];
 
 var getIndex = function(c, r) {
 	if (c < 0 || r < 0 || c >= cols || r >= rows) return -1;
@@ -12,7 +13,7 @@ function setup() {
 	createCanvas(601, 601);
 	cols = floor(width / w);
 	rows = floor(height / w);
-	frameRate(10);
+	// frameRate(10);
 
 	for(var c = 0; c < cols; c++) {
 		for(var r = 0; r< rows; r++) {
@@ -32,6 +33,7 @@ function draw() {
 	var next = current.checkNeighbors();
 	if (next) {
 		next.visited = true;
+		stack.push(current);
 		if (next.row < current.row) {
 			next.walls[2] = false;
 			current.walls[0] = false;
@@ -46,8 +48,10 @@ function draw() {
 			current.walls[3] = false;
 		}
 		current = next;
-		current.highlight();
+	} else if (stack.length > 0) {
+		current = stack.pop();
 	}
+	current.highlight();
 }
 
 function Cell(col, row) {
